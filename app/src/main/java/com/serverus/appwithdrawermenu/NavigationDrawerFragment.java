@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,8 +55,9 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
 
-    public void setUp(int fragmentId,DrawerLayout drawerLayout, Toolbar toolbar) {
-        containerView = getActivity().findViewById(fragmentId);
+    public void setUp(int fragmentId,DrawerLayout drawerLayout, final Toolbar toolbar) {
+        // we get the fragmentId of the drawer to call it in openDrawer()
+        containerView = getActivity().findViewById(fragmentId); // the navigation drawer
 
         mDrawerLayout = drawerLayout;
         mDrawerToggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close){
@@ -64,7 +66,7 @@ public class NavigationDrawerFragment extends Fragment {
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
 
-                if(!mUserLearnedDrawer){
+                if(!mUserLearnedDrawer){ // check if the user never see the drawer before
                     mUserLearnedDrawer = true;
 
                     saveToPreferences(getActivity(), KEY_USER_LEARNED_DRAWER,  mUserLearnedDrawer+"");
@@ -79,9 +81,24 @@ public class NavigationDrawerFragment extends Fragment {
 
                 getActivity().invalidateOptionsMenu();
             }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                //super.onDrawerSlide(drawerView, slideOffset);
+
+                //slideOffset is 1-0, 1 when the drawer is fully open
+
+                // set the dim of the action bar
+                if(slideOffset < 0.6 ){
+                    toolbar.setAlpha(1-slideOffset);
+                }
+
+            }
         };
 
-        if(!mUserLearnedDrawer&& !mFromSavedInstanceState){
+        // if the user has never seen the drawer
+        if(!mUserLearnedDrawer && !mFromSavedInstanceState){
+            // display the drawer
             mDrawerLayout.openDrawer(containerView);
         }
 
@@ -90,6 +107,7 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerLayout.post(new Runnable() {
             @Override
             public void run() {
+                // Synchronize the state of the drawer indicator/affordance with the linked DrawerLayout.
                 mDrawerToggle.syncState();
             }
         });
