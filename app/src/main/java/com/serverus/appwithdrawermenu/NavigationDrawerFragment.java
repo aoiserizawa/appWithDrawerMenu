@@ -7,11 +7,16 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -22,9 +27,12 @@ public class NavigationDrawerFragment extends Fragment {
     public static final String PREF_FILE_NAME="testpref";
     public static final String KEY_USER_LEARNED_DRAWER = "user_learned_drawer";
 
+    private RecyclerView recyclerView;
 
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
+
+    private MyAdapter adapter;
 
     private boolean mUserLearnedDrawer;
     private boolean mFromSavedInstanceState;
@@ -50,8 +58,47 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
+
+        // get the recyclerview from xml fragment_navigation_drawer
+        recyclerView = (RecyclerView) layout.findViewById(R.id.drawerList);
+
+        // call MyAdapter class then pass the
+        // context and getData() to it
+        adapter = new MyAdapter(getActivity(), getData());
+
+        // set an adapter to recyclerView
+        recyclerView.setAdapter(adapter);
+
+        // set a layoutmanager
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
+        return layout;
+    }
+    // this will ready the data in ArrayList for
+    // the data to be bind to ViewHolder in MyAdapter.java
+    // this will be pass to the constructor
+    // ex.  adapter = new MyAdapter(getActivity(), getData());
+    public static List<InformationRow> getData(){
+        List<InformationRow> data = new ArrayList<>();
+
+        int[] icon = {R.mipmap.ic_launcher};
+
+        String[] titles = {"Sample 1", "Sample 2", "Sample 3", "Sample 4"};
+
+        for (int i = 0; i < titles.length; i++) {
+            InformationRow current = new InformationRow();
+
+            current.iconId = icon[0];
+
+            current.title = titles[i];
+
+            data.add(current);
+        }
+
+        return data;
+
     }
 
 
