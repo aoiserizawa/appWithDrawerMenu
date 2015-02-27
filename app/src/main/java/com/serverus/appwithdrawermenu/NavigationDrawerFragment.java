@@ -32,6 +32,7 @@ public class NavigationDrawerFragment extends Fragment {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
 
+    // adapter for recyclerview
     private MyAdapter adapter;
 
     private boolean mUserLearnedDrawer;
@@ -92,7 +93,7 @@ public class NavigationDrawerFragment extends Fragment {
 
             current.iconId = icon[0];
 
-            current.title = titles[i];
+            current.title = titles[i % titles.length];
 
             data.add(current);
         }

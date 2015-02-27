@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>{
 
     private LayoutInflater inflater;
 
+    private Context context;
     //Collections.emptyList() Returns the empty list (immutable).
     // why use Collection.emptyList();?
     // because to declare data as empty because List is interface and
@@ -36,6 +38,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>{
         // in NavigationDrawerFragment.java
         inflater = LayoutInflater.from(context);
         this.data = data;
+        this.context = context;
+    }
+
+    public void deleteItem(int position){
+        data.remove(position);
+        notifyItemRemoved(position);
     }
 
     // makes the recycling of view for example list
@@ -52,12 +60,21 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>{
     // this will bind the data to your elements inside the row of list for
     // onBindViewHolder for the data to be Bind with ViewHolder
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
         InformationRow current = data.get(position);
 
         holder.title.setText(current.title);
 
         holder.icon.setImageResource(current.iconId);
+
+//        holder.icon.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(context, "Item Clicked "+position,Toast.LENGTH_SHORT).show();
+//
+//                deleteItem(position);
+//            }
+//        });
     }
 
     @Override
@@ -67,7 +84,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>{
     }
 
     // Represents the Items of a Row in the recyclerview
-    class MyViewHolder extends RecyclerView.ViewHolder{
+
+    //class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+
+    class MyViewHolder extends RecyclerView.ViewHolder {
         TextView title;
         ImageView icon;
 
@@ -77,6 +97,19 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>{
             title = (TextView) itemView.findViewById(R.id.listText);
             icon = (ImageView) itemView.findViewById(R.id.listIcon);
 
+            icon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteItem(getPosition());
+                }
+            });
+
+            //icon.setOnClickListener(this);
         }
+
+//        @Override
+//        public void onClick(View v) {
+//            deleteItem(getPosition());
+//        }
     }
 }
