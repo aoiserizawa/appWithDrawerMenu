@@ -41,8 +41,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>{
         this.context = context;
     }
 
+    // delete an Item from the List
     public void deleteItem(int position){
+        // remove the item from the ArrayList
         data.remove(position);
+
+        // to notify the view that we deleted something
+        // from the data
         notifyItemRemoved(position);
     }
 
@@ -97,9 +102,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>{
             title = (TextView) itemView.findViewById(R.id.listText);
             icon = (ImageView) itemView.findViewById(R.id.listIcon);
 
+            // click listener for the deletion
             icon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // we use the getPosition() because
+                    // it is the recommended by the docs
+                    //https://developer.android.com/reference/android/support/v7/widget/RecyclerView.Adapter.html#onBindViewHolder(VH, int)
+                    //Note that unlike ListView, RecyclerView will not call this method again if the position of the item changes in the data set unless the item itself is invalidated or the new position cannot be determined. For this reason, you should only use the position parameter while acquiring the related data item inside this method and should not keep a copy of it. If you need the position of an item later on (e.g. in a click listener), use getPosition() which will have the updated position.
                     deleteItem(getPosition());
                 }
             });
