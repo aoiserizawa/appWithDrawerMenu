@@ -11,9 +11,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +76,25 @@ public class NavigationDrawerFragment extends Fragment {
 
         // set a layoutmanager
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        // this will let you add onItemListener on your recyclerView
+        // you instantiate the RecyclerTouchListener then pass the:
+        // 1. Context
+        // 2. the recycler view
+        // 3. the implementation of interface ClickListener
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView, new ClickListener() {
+
+            @Override
+            public void onClick(View view, int position) {
+                //Toast.makeText(getActivity(), "onClick "+position, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+                Toast.makeText(getActivity(), "onLongClick "+position, Toast.LENGTH_LONG).show();
+            }
+        }));
 
         // Inflate the layout for this fragment
         return layout;
@@ -178,4 +200,84 @@ public class NavigationDrawerFragment extends Fragment {
 
         return sharedPreferences.getString(preferenceName, defaultValue);
     }
+
+
+    //we created the RecyclerTouchListener class to let the recyclerView process the onClick
+    // then let the onLongClick processed by the view
+
+    // the RecyclerView.OnItemTouchListener allows you to intercept recyclerView before each children do anything with it
+    class RecyclerTouchListener implements RecyclerView.OnItemTouchListener{
+
+        private GestureDetector gestureDetector;
+
+        private ClickListener clickListener; // the interface that has onClick and onLongClick
+
+        public  RecyclerTouchListener (Context context, final RecyclerView recyclerView,  final ClickListener clickListener){
+
+            this.clickListener = clickListener;
+
+            gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener(){
+
+                @Override
+                // this will be called by the if condition in the onInterceptTouchEvent
+                public boolean onSingleTapUp(MotionEvent e) {
+                    // makes the onInterceptTouchEvent true
+                    return true;
+                }
+
+                @Override
+
+                // on the onLongPress we also pass it by the  gestureDetector.onTouchEvent(motionEvent)
+                // but then it wont be handled by the onInterceptTouchEvent because by default it returns true
+                // but it makes the event trigger by clickListener.onLongClick which will be handled by the view
+                // not the recyclerView
+                public void onLongPress(MotionEvent e) {
+                    // find the childview on which long pressed
+                    View childView = recyclerView.findChildViewUnder(e.getX(), e.getY());
+
+                    if(childView != null && clickListener != null){
+                        // makes the longClick trigger by the view
+                        clickListener.onLongClick(childView, recyclerView.getChildPosition(childView));
+                    }
+                    super.onLongPress(e);
+                }
+            });
+        }
+
+        //Silently observe and/or take over touch events sent to the RecyclerView before they are handled by either the RecyclerView itself or its child views.
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent motionEvent) {
+
+            View childView = recyclerView.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
+
+            // this is the crucial part
+            // we pass the motionEvent to gesture detector by gestureDetector.onTouchEvent(motionEvent)
+            // which will be onSingleTapUp then return true and makes the onInterceptTouchEvent return true
+            // then it will do the clickListener.onClick
+            // because the if statement will be true on the gestureDetector part
+
+            if(childView != null && clickListener != null && gestureDetector.onTouchEvent(motionEvent))
+            {
+                // the click is now handled by the recyclerView
+                clickListener.onClick(childView, recyclerView.getChildPosition(childView));
+            }
+
+            return false;
+        }
+
+        //Process a touch event as part of a gesture that was claimed by returning true from a previous call to
+        @Override
+        public void onTouchEvent(RecyclerView recyclerView, MotionEvent motionEvent) {
+
+        }
+    }
+
+    public static interface ClickListener{
+
+        public void onClick(View view, int position);
+
+        public void onLongClick(View view, int position);
+    }
 }
+
+
