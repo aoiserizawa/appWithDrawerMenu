@@ -1,4 +1,4 @@
-package com.serverus.appwithdrawermenu;
+package com.serverus.appwithdrawermenu.activities;
 
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
+
+import com.serverus.appwithdrawermenu.R;
 
 
 public class SubActivity extends ActionBarActivity {

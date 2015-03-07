@@ -1,15 +1,15 @@
-package com.serverus.appwithdrawermenu;
+package com.serverus.appwithdrawermenu.ui;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+
+import com.serverus.appwithdrawermenu.R;
 
 import java.util.List;
 import java.util.Collections;

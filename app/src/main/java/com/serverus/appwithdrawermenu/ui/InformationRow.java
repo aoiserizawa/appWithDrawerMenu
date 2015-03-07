@@ -1,4 +1,4 @@
-package com.serverus.appwithdrawermenu;
+package com.serverus.appwithdrawermenu.ui;
 
 /**
  * Created by alvinvaldez on 2/26/15.

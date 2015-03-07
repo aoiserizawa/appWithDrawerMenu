@@ -1,4 +1,4 @@
-package com.serverus.appwithdrawermenu;
+package com.serverus.appwithdrawermenu.ui;
 
 
 import android.content.Context;
@@ -10,13 +10,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.serverus.appwithdrawermenu.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,7 +87,7 @@ public class NavigationDrawerFragment extends Fragment {
 
             @Override
             public void onClick(View view, int position) {
-                //Toast.makeText(getActivity(), "onClick "+position, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "onClick "+position, Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -226,7 +227,6 @@ public class NavigationDrawerFragment extends Fragment {
                 }
 
                 @Override
-
                 // on the onLongPress we also pass it by the  gestureDetector.onTouchEvent(motionEvent)
                 // but then it wont be handled by the onInterceptTouchEvent because by default it returns true
                 // but it makes the event trigger by clickListener.onLongClick which will be handled by the view
